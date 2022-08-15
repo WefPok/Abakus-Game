@@ -25,6 +25,7 @@ fingers = [thumb_right, thumb_left, index_right, index_left]
 
 
 def create_json(hand_lanmark):
+
     accepted_points = [0, 4, 8, 12, 16, 20]
     names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky']
     res = {}
