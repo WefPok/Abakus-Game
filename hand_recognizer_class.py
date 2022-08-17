@@ -26,8 +26,8 @@ fingers = [thumb_right, thumb_left, index_right, index_left]
 
 def create_json(hand_lanmark):
 
-    accepted_points = [0, 4, 8, 12, 16, 20]
-    names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky']
+    accepted_points = [0, 4, 8, 12, 16, 20, 9]
+    names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
     for index, point in enumerate(hand_lanmark):
         if index in accepted_points:
@@ -54,26 +54,13 @@ def recognize(cap):
 
         if len(result.multi_hand_world_landmarks) < 2:
             print("Can't see both hands")
-            return "No hand"
+            return "0"
 
         hand1 = result.multi_hand_world_landmarks[0]
         hand2 = result.multi_hand_world_landmarks[1]
 
         json = create_json(hand1.landmark)
 
-
-        index_right.x = hand1.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP].x
-        index_right.y = hand1.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP].y
-
-        thumb_right.x = hand1.landmark[mpHands.HandLandmark.THUMB_TIP].x
-        thumb_right.y = hand1.landmark[mpHands.HandLandmark.THUMB_TIP].y
-
-        index_left.x = hand2.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP].x
-        index_left.y = hand2.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP].y
-
-        thumb_left.x = hand2.landmark[mpHands.HandLandmark.THUMB_TIP].x
-        thumb_left.y = hand2.landmark[mpHands.HandLandmark.THUMB_TIP].y
-
         return json
     else:
-        return "No both hands"
+        return "0"
