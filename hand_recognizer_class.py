@@ -52,9 +52,9 @@ def recognize(cap):
 
     if result.multi_hand_world_landmarks:
 
-        if len(result.multi_hand_world_landmarks) < 2:
-            print("Can't see both hands")
-            return "0"
+        # if len(result.multi_hand_world_landmarks) < 2:
+        #     print("Can't see both hands")
+        #     return "0"
 
         hand1 = result.multi_hand_world_landmarks[0]
         hand2 = result.multi_hand_world_landmarks[1]
