@@ -12,6 +12,7 @@ model = load_model('mp_hand_gesture')
 class EventStack:
     def __init__(self, length, placeholder="PlaceHolder"):
         self.stack = [placeholder] * length
+        self.length = length
 
     def append(self, event):
         self.stack.pop(0)
@@ -22,6 +23,9 @@ class EventStack:
 
     def get_stack(self):
         return self.stack
+
+    def clear(self):
+        self.stack = ["PlaceHolder"] * self.length
 
 
 def get_x_range(wrist_x):
@@ -68,10 +72,15 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
 class Recognizer:
     def __init__(self):
-        self.stack1 = EventStack(10)
-        self.stack2 = EventStack(10)
+        self.thumb_stack1 = EventStack(10)
+        self.thumb_stack2 = EventStack(10)
         self.thumb_state1 = True
         self.thumb_state2 = True
+
+        self.index_stack1 = EventStack(10)
+        self.index_stack2 = EventStack(10)
+        self.index_state1 = True
+        self.index_state2 = True
 
     def recognize(self, frame):
         framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -82,8 +91,10 @@ class Recognizer:
             hand1 = result.multi_hand_landmarks[0]
             hand2 = result.multi_hand_landmarks[1]
 
-            analysis1 = self.event_analyzer(self.stack1, hand1.landmark, self.thumb_state1, 1)
-            analysis2 = self.event_analyzer(self.stack2, hand2.landmark, self.thumb_state2, 2)
+            analysis1 = self.event_analyzer(self.thumb_stack1, self.index_stack1, hand1.landmark, self.thumb_state1,
+                                            self.index_state1, 1)
+            analysis2 = self.event_analyzer(self.thumb_stack2, self.index_stack2, hand2.landmark, self.thumb_state2,
+                                            self.index_state2, 2)
 
             json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
 
@@ -91,39 +102,69 @@ class Recognizer:
         else:
             return None
 
-    def event_analyzer(self, position_stack: EventStack, hand_landmark, thumb_state, hand_n):
+    def event_analyzer(self, thumb_pos: EventStack, index_pos: EventStack, hand_landmark, thumb_state, index_state,
+                       hand_n):
         wrist_position = hand_landmark[0].y
         thumb_position = hand_landmark[4].y - wrist_position
         index_position = hand_landmark[8].y - wrist_position
 
-
-
-        position_stack.append([thumb_position, index_position])
+        thumb_pos.append(thumb_position)
+        index_pos.append(index_position)
 
         res = {"+5": False,
                "+1": False,
                "-5": False,
                "-1": False}
 
-        if "PlaceHolder" in position_stack.get_stack():
-            return res
+        if "PlaceHolder" not in thumb_pos.get_stack():
+            diff_thumb = thumb_position - thumb_pos.get_stack()[-5]
 
-        diff_thumb = thumb_position - position_stack.get_stack()[-5][0]
+            if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
+                res["+1"] = True
+                if hand_n == 1:
+                    self.thumb_state1 = False
+                    self.thumb_stack1.clear()
+                else:
+                    self.thumb_state2 = False
+                    self.thumb_stack2.clear()
+            elif not thumb_state:
+                if hand_n == 1:
+                    self.thumb_state1 = True
+                else:
+                    self.thumb_state2 = True
 
-        diff_index = index_position - position_stack.get_stack()[-5][0]
+        if "PlaceHolder" not in index_pos.get_stack():
+            diff_index = index_position - index_pos.get_stack()[-5]
+            if 0.1 < abs(diff_index) and diff_index > 0 and index_state:
+                res["+5"] = True
+                if hand_n == 1:
+                    self.index_state1 = False
+                    self.index_stack1.clear()
+                else:
+                    self.index_state2 = False
+                    self.index_stack2.clear()
 
-        if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
-            res["+1"] = True
-            if hand_n == 1:
-                self.thumb_state1 = False
-            else:
-                self.thumb_state2 = False
-        elif not thumb_state:
-            if hand_n == 1:
-                self.thumb_state1 = True
-            else:
-                self.thumb_state2 = True
+            elif 0.1 < abs(diff_index) < 0.2 and diff_index < 0 and index_state:
+                res["-5"] = True
+                if hand_n == 1:
+                    self.index_state1 = False
+                    self.index_stack1.clear()
+                else:
+                    self.index_state2 = False
+                    self.index_stack2.clear()
 
-        # if abs(diff_index) > 0.1 and diff_index > 0:
+            elif abs(diff_index) > 0.2 and diff_index < 0 and index_state:
+                res["-1"] = True
+                if hand_n == 1:
+                    self.index_state1 = False
+                    self.index_stack1.clear()
+                else:
+                    self.index_state2 = False
+                    self.index_stack2.clear()
 
+            elif not thumb_state:
+                if hand_n == 1:
+                    self.thumb_state1 = True
+                else:
+                    self.thumb_state2 = True
         return res
