@@ -77,8 +77,8 @@ class Recognizer:
         self.thumb_state1 = True
         self.thumb_state2 = True
 
-        self.index_stack1 = EventStack(10)
-        self.index_stack2 = EventStack(10)
+        self.index_stack1 = EventStack(20)
+        self.index_stack2 = EventStack(20)
         self.index_state1 = True
         self.index_state2 = True
 
@@ -134,7 +134,7 @@ class Recognizer:
                     self.thumb_state2 = True
 
         if "PlaceHolder" not in index_pos.get_stack():
-            diff_index = index_position - index_pos.get_stack()[-5]
+            diff_index = index_position - index_pos.get_stack()[-10]
             if 0.1 < abs(diff_index) and diff_index > 0 and index_state:
                 res["+5"] = True
                 if hand_n == 1:
