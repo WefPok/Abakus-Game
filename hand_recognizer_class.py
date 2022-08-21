@@ -121,6 +121,7 @@ class Recognizer:
 
             if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
                 res["+1"] = True
+                print("Op: +1")
                 if hand_n == 1:
                     self.thumb_state1 = False
                     self.thumb_stack1.clear()
@@ -137,6 +138,7 @@ class Recognizer:
             diff_index = index_position - index_pos.get_stack()[-3]
             if 0.05 < abs(diff_index) and diff_index < 0 and index_state:
                 res["+5"] = True
+                print("Op: +5")
                 if hand_n == 1:
                     self.index_state1 = False
                     self.index_stack1.clear()
@@ -146,6 +148,7 @@ class Recognizer:
 
             elif 0.05 < abs(diff_index) < 0.1 and diff_index > 0 and index_state:
                 res["-5"] = True
+                print("Op: -5")
                 if hand_n == 1:
                     self.index_state1 = False
                     self.index_stack1.clear()
@@ -155,6 +158,7 @@ class Recognizer:
 
             elif abs(diff_index) > 0.1 and diff_index > 0 and index_state:
                 res["-1"] = True
+                print("Op: -1")
                 if hand_n == 1:
                     self.index_state1 = False
                     self.index_stack1.clear()
