@@ -96,8 +96,8 @@ def recognize(cap):
         hand1 = result.multi_hand_landmarks[0]
         hand2 = result.multi_hand_landmarks[1]
 
-        analysis1 = event_analyzer(stack1, hand1)
-        analysis2 = event_analyzer(stack2, hand2)
+        analysis1 = event_analyzer(stack1, hand1.landmark)
+        analysis2 = event_analyzer(stack2, hand2.landmark)
 
         json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
 
