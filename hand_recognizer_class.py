@@ -72,13 +72,13 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
 class Recognizer:
     def __init__(self):
-        self.thumb_stack1 = EventStack(20)
-        self.thumb_stack2 = EventStack(20)
+        self.thumb_stack1 = EventStack(10)
+        self.thumb_stack2 = EventStack(10)
         self.thumb_state1 = True
         self.thumb_state2 = True
 
-        self.index_stack1 = EventStack(20)
-        self.index_stack2 = EventStack(20)
+        self.index_stack1 = EventStack(10)
+        self.index_stack2 = EventStack(10)
         self.index_state1 = True
         self.index_state2 = True
 
