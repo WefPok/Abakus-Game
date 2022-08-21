@@ -33,27 +33,28 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
 
 
 def get_x_range(wrist_x):
+    res = 9
     if wrist_x < 0.1:
-        wrist_x = 0
+        res = 0
     elif 0.1 <= wrist_x < 0.2:
-        wrist_x = 1
+        res = 1
     elif 0.2 <= wrist_x < 0.3:
-        wrist_x = 2
+        res = 2
     elif 0.3 <= wrist_x < 0.4:
-        wrist_x = 3
+        res = 3
     elif 0.4 <= wrist_x < 0.5:
-        wrist_x = 4
+        res = 4
     elif 0.5 <= wrist_x < 0.6:
-        wrist_x = 5
+        res = 5
     elif 0.6 <= wrist_x < 0.7:
-        wrist_x = 6
+        res = 6
     elif 0.7 <= wrist_x < 0.8:
-        wrist_x = 7
+        res = 7
     elif 0.8 <= wrist_x < 0.9:
-        wrist_x = 8
+        res = 8
     else:
-        wrist_x = 9
-    return wrist_x
+        res = 9
+    return res
 
 
 def create_json(hand_lanmark1, hand_lanmark2):
