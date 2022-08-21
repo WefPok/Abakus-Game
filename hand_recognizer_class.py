@@ -36,7 +36,7 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
            "-5": False,
            "-1": False}
 
-    diff_thumb = thumb_position - position_stack.get_stack()[-10]
+    diff_thumb = thumb_position - position_stack.get_stack()[-10][0]
     if abs(diff_thumb) > 0.2 and diff_thumb > 0:
         res["+1"] = True
     return res
