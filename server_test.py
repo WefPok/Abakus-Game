@@ -10,8 +10,9 @@ rec = Recognizer()
 
 async def handler(websocket):
     while True:
+        ret, frame = cap.read()
         await asyncio.sleep(0.05)
-        res = rec.recognize(cap)
+        res = rec.recognize(frame)
         if res is not None:
             await websocket.send(res)
 

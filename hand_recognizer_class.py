@@ -40,8 +40,12 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
         return res
 
     diff_thumb = thumb_position - position_stack.get_stack()[-5][0]
+
+    diff_index = index_position - position_stack.get_stack()[-5][0]
+
     if abs(diff_thumb) > 0.1 and diff_thumb > 0:
         res["+1"] = True
+    if abs(diff_index) > 0.1 and diff_index > 0:
     return res
 
 
@@ -88,8 +92,8 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
 class Recognizer:
     def __init__(self):
-        self.stack1 = EventStack(20)
-        self.stack2 = EventStack(20)
+        self.stack1 = EventStack(10)
+        self.stack2 = EventStack(10)
 
     def recognize(self, frame):
         framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
