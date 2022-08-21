@@ -72,8 +72,8 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
 class Recognizer:
     def __init__(self):
-        self.thumb_stack1 = EventStack(10)
-        self.thumb_stack2 = EventStack(10)
+        self.thumb_stack1 = EventStack(20)
+        self.thumb_stack2 = EventStack(20)
         self.thumb_state1 = True
         self.thumb_state2 = True
 
@@ -117,7 +117,7 @@ class Recognizer:
                "-1": False}
 
         if "PlaceHolder" not in thumb_pos.get_stack():
-            diff_thumb = thumb_position - thumb_pos.get_stack()[-5]
+            diff_thumb = thumb_position - thumb_pos.get_stack()[-10]
 
             if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
                 res["+1"] = True
