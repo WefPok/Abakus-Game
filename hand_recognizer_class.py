@@ -135,7 +135,7 @@ class Recognizer:
 
         if "PlaceHolder" not in index_pos.get_stack():
             diff_index = index_position - index_pos.get_stack()[-10]
-            if 0.1 < abs(diff_index) and diff_index > 0 and index_state:
+            if 0.05 < abs(diff_index) and diff_index > 0 and index_state:
                 res["+5"] = True
                 if hand_n == 1:
                     self.index_state1 = False
@@ -144,7 +144,7 @@ class Recognizer:
                     self.index_state2 = False
                     self.index_stack2.clear()
 
-            elif 0.1 < abs(diff_index) < 0.2 and diff_index < 0 and index_state:
+            elif 0.05 < abs(diff_index) < 0.1 and diff_index < 0 and index_state:
                 res["-5"] = True
                 if hand_n == 1:
                     self.index_state1 = False
@@ -153,7 +153,7 @@ class Recognizer:
                     self.index_state2 = False
                     self.index_stack2.clear()
 
-            elif abs(diff_index) > 0.2 and diff_index < 0 and index_state:
+            elif abs(diff_index) > 0.1 and diff_index < 0 and index_state:
                 res["-1"] = True
                 if hand_n == 1:
                     self.index_state1 = False
