@@ -12,8 +12,8 @@ async def handler(websocket):
         await asyncio.sleep(0.05)
 
         res = recognize(cap)
-
-        await websocket.send(res)
+        if res is not None:
+            await websocket.send(res)
         if cv2.waitKey(1) == ord('q'):
             break
 

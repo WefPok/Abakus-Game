@@ -87,7 +87,7 @@ def recognize(cap):
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(framergb)
 
-    if result.multi_hand_world_landmarks and len(result.multi_hand_world_landmarks == 2):
+    if result.multi_hand_world_landmarks and len(result.multi_hand_world_landmarks) == 2:
 
         hand1 = result.multi_hand_world_landmarks[0]
         hand2 = result.multi_hand_world_landmarks[1]
@@ -95,4 +95,4 @@ def recognize(cap):
 
         return json
     else:
-        return "0"
+        return None
