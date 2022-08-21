@@ -24,34 +24,6 @@ class EventStack:
         return self.stack
 
 
-def event_analyzer(position_stack: EventStack, hand_landmark, thumb_state):
-    wrist_position = hand_landmark[0].y
-    thumb_position = hand_landmark[4].y - wrist_position
-    index_position = hand_landmark[8].y - wrist_position
-
-    position_stack.append([thumb_position, index_position])
-
-    res = {"+5": False,
-           "+1": False,
-           "-5": False,
-           "-1": False}
-
-    if "PlaceHolder" in position_stack.get_stack():
-        return res
-
-    diff_thumb = thumb_position - position_stack.get_stack()[-5][0]
-
-    diff_index = index_position - position_stack.get_stack()[-5][0]
-
-    if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
-        res["+1"] = True
-        thumb_state = False
-    elif not thumb_state:
-        thumb_state = True
-    # if abs(diff_index) > 0.1 and diff_index > 0:
-    return res
-
-
 def get_x_range(wrist_x):
     res = 9
     if wrist_x < 0.1:
@@ -93,6 +65,7 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
     return json.dumps(res)
 
+
 class Recognizer:
     def __init__(self):
         self.stack1 = EventStack(10)
@@ -109,11 +82,48 @@ class Recognizer:
             hand1 = result.multi_hand_landmarks[0]
             hand2 = result.multi_hand_landmarks[1]
 
-            analysis1 = event_analyzer(self.stack1, hand1.landmark, self.thumb_state1)
-            analysis2 = event_analyzer(self.stack2, hand2.landmark, self.thumb_state2)
+            analysis1 = self.event_analyzer(self.stack1, hand1.landmark, self.thumb_state1, 1)
+            analysis2 = self.event_analyzer(self.stack2, hand2.landmark, self.thumb_state2, 2)
 
             json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
 
             return json
         else:
             return None
+
+    def event_analyzer(self, position_stack: EventStack, hand_landmark, thumb_state, hand_n):
+        wrist_position = hand_landmark[0].y
+        thumb_position = hand_landmark[4].y - wrist_position
+        index_position = hand_landmark[8].y - wrist_position
+
+
+
+        position_stack.append([thumb_position, index_position])
+
+        res = {"+5": False,
+               "+1": False,
+               "-5": False,
+               "-1": False}
+
+        if "PlaceHolder" in position_stack.get_stack():
+            return res
+
+        diff_thumb = thumb_position - position_stack.get_stack()[-5][0]
+
+        diff_index = index_position - position_stack.get_stack()[-5][0]
+
+        if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
+            res["+1"] = True
+            if hand_n == 1:
+                self.thumb_state1 = False
+            else:
+                self.thumb_state2 = False
+        elif not thumb_state:
+            if hand_n == 1:
+                self.thumb_state1 = True
+            else:
+                self.thumb_state2 = True
+
+        # if abs(diff_index) > 0.1 and diff_index > 0:
+
+        return res
