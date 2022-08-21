@@ -55,13 +55,13 @@ def get_x_range(wrist_x):
 
 def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
     res = {}
-    wrist_x = hand_lanmark1[4].x
+    wrist_x = hand_lanmark1[0].x
     wrist_x = get_x_range(wrist_x)
 
     res['right_hand'] = {"x_position": wrist_x,
                          "events": analyze_res1}
 
-    wrist_x = hand_lanmark2[4].x
+    wrist_x = hand_lanmark2[0].x
     wrist_x = get_x_range(wrist_x)
 
     res['left_hand'] = {"x_position": wrist_x,
@@ -162,7 +162,7 @@ class Recognizer:
                     self.index_state2 = False
                     self.index_stack2.clear()
 
-            elif not thumb_state:
+            elif not index_state:
                 if hand_n == 1:
                     self.index_state1 = True
                 else:
