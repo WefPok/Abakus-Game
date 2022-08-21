@@ -31,6 +31,15 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
 
     position_stack.append([thumb_position, index_position])
 
+    res = {"+5": False,
+           "+1": False,
+           "-5": False,
+           "-1": False}
+
+    diff_thumb = thumb_position - position_stack.get_stack()[-10]
+    if abs(diff_thumb) > 0.2 and diff_thumb > 0:
+        res["+1"] = True
+
 
 def get_x_range(wrist_x):
     res = 9
@@ -57,28 +66,22 @@ def get_x_range(wrist_x):
     return res
 
 
-def create_json(hand_lanmark1, hand_lanmark2):
+def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
     accepted_points = [0, 4, 8, 12, 16, 20, 9]
     names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
     wrist_x = hand_lanmark1[4].x
     wrist_x = get_x_range(wrist_x)
 
-    res['right_hand'] = {"x_position": wrist_x}
+    res['right_hand'] = {"x_position": wrist_x,
+                         "events": analyze_res1}
 
     wrist_x = hand_lanmark2[4].x
     wrist_x = get_x_range(wrist_x)
 
-    res['left_hand'] = {"x_position": wrist_x}
+    res['left_hand'] = {"x_position": wrist_x,
+                        "events": analyze_res2}
 
-
-
-    # for index, point in enumerate(hand_lanmark):
-    #     if index in accepted_points:
-    #         temp = {'x': round(point.x, 2),
-    #                 'y': round(point.y, 2),
-    #                 'z': round(point.z, 2)}
-    #         res[names[accepted_points.index(index)]] = temp
     return json.dumps(res)
 
 
