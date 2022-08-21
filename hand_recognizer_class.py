@@ -164,7 +164,7 @@ class Recognizer:
 
             elif not thumb_state:
                 if hand_n == 1:
-                    self.thumb_state1 = True
+                    self.index_state1 = True
                 else:
-                    self.thumb_state2 = True
+                    self.index_state2 = True
         return res
