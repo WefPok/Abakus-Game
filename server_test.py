@@ -1,21 +1,19 @@
 import asyncio
 import websockets
 import cv2
-from hand_recognizer_class import recognize
+from hand_recognizer_class import Recognizer
 
 cap = cv2.VideoCapture(0)
+
+rec = Recognizer()
 
 
 async def handler(websocket):
     while True:
-
         await asyncio.sleep(0.05)
-
-        res = recognize(cap)
+        res = rec.recognize(cap)
         if res is not None:
             await websocket.send(res)
-        if cv2.waitKey(1) == ord('q'):
-            break
 
 
 async def main():
