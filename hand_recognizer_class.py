@@ -36,6 +36,9 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
            "-5": False,
            "-1": False}
 
+    if "PlaceHolder" in position_stack.get_stack():
+        return res
+
     diff_thumb = thumb_position - position_stack.get_stack()[-10][0]
     if abs(diff_thumb) > 0.2 and diff_thumb > 0:
         res["+1"] = True
@@ -89,8 +92,8 @@ def recognize(cap):
     _, frame = cap.read()
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(framergb)
-    stack1 = EventStack(30)
-    stack2 = EventStack(30)
+    stack1 = EventStack(20)
+    stack2 = EventStack(20)
     if result.multi_hand_landmarks and len(result.multi_hand_landmarks) == 2:
 
         hand1 = result.multi_hand_landmarks[0]
