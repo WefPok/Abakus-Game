@@ -61,12 +61,12 @@ def create_json(hand_lanmark1, hand_lanmark2):
     accepted_points = [0, 4, 8, 12, 16, 20, 9]
     names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
-    wrist_x = hand_lanmark1[0].x
+    wrist_x = hand_lanmark1[4].x
     wrist_x = get_x_range(wrist_x)
 
     res['right_hand'] = {"x_position": wrist_x}
 
-    wrist_x = hand_lanmark2[0].x
+    wrist_x = hand_lanmark2[4].x
     wrist_x = get_x_range(wrist_x)
 
     res['left_hand'] = {"x_position": wrist_x}
