@@ -9,31 +9,68 @@ hands = mpHands.Hands(max_num_hands=2, min_detection_confidence=0.8)
 model = load_model('mp_hand_gesture')
 
 
-class Finger:
-    def __init__(self, id):
-        self.x = 0
-        self.y = 0
-        self.id = id
+class EventStack:
+    def __init__(self, length, placeholder="PlaceHolder"):
+        self.stack = [placeholder] * length
+
+    def append(self, event):
+        self.stack.pop(0)
+        self.stack.append(event)
+
+    def get_last(self):
+        return self.stack[-1]
+
+    def get_stack(self):
+        return self.stack
 
 
-index_right = Finger("ir")
-index_left = Finger("il")
+def event_analyzer(position_stack: EventStack, hand_landmark):
+    wrist_position = hand_landmark[0].y
+    thumb_position = hand_landmark[4].y - wrist_position
+    index_position = hand_landmark[8].y - wrist_position
 
-thumb_right = Finger("tr")
-thumb_left = Finger("tl")
-fingers = [thumb_right, thumb_left, index_right, index_left]
+    position_stack.append([thumb_position, index_position])
 
 
-def create_json(hand_lanmark):
+def get_x_range(wrist_x):
+    if wrist_x < 0.1:
+        wrist_x = 0
+    elif 0.1 <= wrist_x < 0.2:
+        wrist_x = 1
+    elif 0.2 <= wrist_x < 0.3:
+        wrist_x = 2
+    elif 0.3 <= wrist_x < 0.4:
+        wrist_x = 3
+    elif 0.4 <= wrist_x < 0.5:
+        wrist_x = 4
+    elif 0.5 <= wrist_x < 0.6:
+        wrist_x = 5
+    elif 0.6 <= wrist_x < 0.7:
+        wrist_x = 6
+    elif 0.7 <= wrist_x < 0.8:
+        wrist_x = 7
+    elif 0.8 <= wrist_x < 0.9:
+        wrist_x = 8
+    else:
+        wrist_x = 9
+    return wrist_x
 
+
+def create_json(hand_lanmark1, hand_lanmark2):
     accepted_points = [0, 4, 8, 12, 16, 20, 9]
     names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
-    wrist = round(hand_lanmark[0]*10)
-    if wrist == 10:
-        wrist = 9
+    wrist_x = hand_lanmark1[0].x
+    wrist_x = get_x_range(wrist_x)
 
-    res['x_postion'] = wrist
+    res['right_hand'] = {"x_position": wrist_x}
+
+    wrist_x = hand_lanmark2[0].x
+    wrist_x = get_x_range(wrist_x)
+
+    res['left_hand'] = {"x_position": wrist_x}
+
+
 
     # for index, point in enumerate(hand_lanmark):
     #     if index in accepted_points:
@@ -43,29 +80,18 @@ def create_json(hand_lanmark):
     #         res[names[accepted_points.index(index)]] = temp
     return json.dumps(res)
 
+
 def recognize(cap):
+    positions_stack = EventStack(30)
     _, frame = cap.read()
-    y, x, c = frame.shape
-    # Flip the frame vertically
-    # frame = cv2.flip(frame, 1)
-    # Show the final output
-
-    # release the webcam and destroy all active windows
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    # Get hand landmark prediction
     result = hands.process(framergb)
-    # post process the result
 
-    if result.multi_hand_world_landmarks:
-
-        # if len(result.multi_hand_world_landmarks) < 2:
-        #     print("Can't see both hands")
-        #     return "0"
+    if result.multi_hand_world_landmarks and len(result.multi_hand_world_landmarks == 2):
 
         hand1 = result.multi_hand_world_landmarks[0]
         hand2 = result.multi_hand_world_landmarks[1]
-
-        json = create_json(hand1.landmark)
+        json = create_json(hand1.landmark, hand2.landmark)
 
         return json
     else:
