@@ -39,6 +39,7 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
     diff_thumb = thumb_position - position_stack.get_stack()[-10]
     if abs(diff_thumb) > 0.2 and diff_thumb > 0:
         res["+1"] = True
+    return res
 
 
 def get_x_range(wrist_x):
@@ -67,8 +68,6 @@ def get_x_range(wrist_x):
 
 
 def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
-    accepted_points = [0, 4, 8, 12, 16, 20, 9]
-    names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
     wrist_x = hand_lanmark1[4].x
     wrist_x = get_x_range(wrist_x)
@@ -90,12 +89,17 @@ def recognize(cap):
     _, frame = cap.read()
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(framergb)
-
+    stack1 = EventStack(30)
+    stack2 = EventStack(30)
     if result.multi_hand_landmarks and len(result.multi_hand_landmarks) == 2:
 
         hand1 = result.multi_hand_landmarks[0]
         hand2 = result.multi_hand_landmarks[1]
-        json = create_json(hand1.landmark, hand2.landmark)
+
+        analysis1 = event_analyzer(stack1, hand1)
+        analysis2 = event_analyzer(stack2, hand2)
+
+        json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
 
         return json
     else:
