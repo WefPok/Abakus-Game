@@ -29,12 +29,18 @@ def create_json(hand_lanmark):
     accepted_points = [0, 4, 8, 12, 16, 20, 9]
     names = ['wrist', 'thumb', 'index', 'middle', 'ring', 'pinky', 'directional']
     res = {}
-    for index, point in enumerate(hand_lanmark):
-        if index in accepted_points:
-            temp = {'x': round(point.x, 2),
-                    'y': round(point.y, 2),
-                    'z': round(point.z, 2)}
-            res[names[accepted_points.index(index)]] = temp
+    wrist = round(hand_lanmark[0]*10)
+    if wrist == 10:
+        wrist = 9
+
+    res['x_postion'] = wrist
+
+    # for index, point in enumerate(hand_lanmark):
+    #     if index in accepted_points:
+    #         temp = {'x': round(point.x, 2),
+    #                 'y': round(point.y, 2),
+    #                 'z': round(point.z, 2)}
+    #         res[names[accepted_points.index(index)]] = temp
     return json.dumps(res)
 
 def recognize(cap):
