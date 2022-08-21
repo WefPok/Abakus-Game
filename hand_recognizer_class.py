@@ -39,8 +39,8 @@ def event_analyzer(position_stack: EventStack, hand_landmark):
     if "PlaceHolder" in position_stack.get_stack():
         return res
 
-    diff_thumb = thumb_position - position_stack.get_stack()[-10][0]
-    if abs(diff_thumb) > 0.2 and diff_thumb > 0:
+    diff_thumb = thumb_position - position_stack.get_stack()[-5][0]
+    if abs(diff_thumb) > 0.1 and diff_thumb > 0:
         res["+1"] = True
     return res
 
@@ -86,24 +86,25 @@ def create_json(hand_lanmark1, hand_lanmark2, analyze_res1, analyze_res2):
 
     return json.dumps(res)
 
+class Recognizer:
+    def __init__(self):
+        self.stack1 = EventStack(20)
+        self.stack2 = EventStack(20)
 
-def recognize(cap):
-    positions_stack = EventStack(30)
-    _, frame = cap.read()
-    framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    result = hands.process(framergb)
-    stack1 = EventStack(20)
-    stack2 = EventStack(20)
-    if result.multi_hand_landmarks and len(result.multi_hand_landmarks) == 2:
+    def recognize(self, frame):
+        framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        result = hands.process(framergb)
 
-        hand1 = result.multi_hand_landmarks[0]
-        hand2 = result.multi_hand_landmarks[1]
+        if result.multi_hand_landmarks and len(result.multi_hand_landmarks) == 2:
 
-        analysis1 = event_analyzer(stack1, hand1.landmark)
-        analysis2 = event_analyzer(stack2, hand2.landmark)
+            hand1 = result.multi_hand_landmarks[0]
+            hand2 = result.multi_hand_landmarks[1]
 
-        json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
+            analysis1 = event_analyzer(self.stack1, hand1.landmark)
+            analysis2 = event_analyzer(self.stack2, hand2.landmark)
 
-        return json
-    else:
-        return None
+            json = create_json(hand1.landmark, hand2.landmark, analysis1, analysis2)
+
+            return json
+        else:
+            return None
