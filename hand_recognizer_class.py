@@ -119,7 +119,7 @@ class Recognizer:
         if "PlaceHolder" not in thumb_pos.get_stack():
             diff_thumb = thumb_position - thumb_pos.get_stack()[-3]
 
-            if abs(diff_thumb) > 0.1 and diff_thumb > 0 and thumb_state:
+            if abs(diff_thumb) > 0.05 and diff_thumb > 0 and thumb_state:
                 res["+1"] = True
                 print("Op: +1")
                 if hand_n == 1:
