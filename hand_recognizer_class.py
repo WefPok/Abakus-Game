@@ -146,7 +146,17 @@ class Recognizer:
                     self.index_state2 = False
                     self.index_stack2.clear()
 
-            elif 0.05 < abs(diff_index) < 0.1 and diff_index > 0 and index_state:
+            elif abs(diff_index) > 0.7 and diff_index > 0 and index_state:
+                res["-1"] = True
+                print("Op: -1")
+                if hand_n == 1:
+                    self.index_state1 = False
+                    self.index_stack1.clear()
+                else:
+                    self.index_state2 = False
+                    self.index_stack2.clear()
+
+            elif 0.05 < abs(diff_index) < 0.7 and diff_index > 0 and index_state:
                 res["-5"] = True
                 print("Op: -5")
                 if hand_n == 1:
@@ -156,15 +166,7 @@ class Recognizer:
                     self.index_state2 = False
                     self.index_stack2.clear()
 
-            elif abs(diff_index) > 0.1 and diff_index > 0 and index_state:
-                res["-1"] = True
-                print("Op: -1")
-                if hand_n == 1:
-                    self.index_state1 = False
-                    self.index_stack1.clear()
-                else:
-                    self.index_state2 = False
-                    self.index_stack2.clear()
+
 
             elif not index_state:
                 if hand_n == 1:
