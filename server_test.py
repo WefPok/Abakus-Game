@@ -13,6 +13,7 @@ async def handler(websocket):
         ret, frame = cap.read()
         await asyncio.sleep(0.01)
         res = rec.main(frame)
+
         if res is not None:
             await websocket.send(res)
         if cv2.waitKey(1) == 1:

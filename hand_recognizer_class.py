@@ -239,4 +239,4 @@ class Analyzer:
                       "left_hand": {"x_position": self.hands[1].x_pos,
                                      "events": self.hands[1].set_state_variables()}}
 
-        return event_json
+        return json.dumps(event_json)
