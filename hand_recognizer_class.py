@@ -133,7 +133,7 @@ class Hand:
                   "-5": False}
         if self.thumb_timeout == 0:
             thumb_first5 = self.angle_thumb.get_stack()[0:5]
-            if all(i < 50 for i in thumb_first5):
+            if all(i < 40 for i in thumb_first5):
                 if self.thumb_bent:
                     self.thumb_bent = False
             else:
