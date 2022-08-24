@@ -148,7 +148,7 @@ class Hand:
 
         if self.index_timeout == 0:
             index_first5 = self.angle_index.get_stack()[0:5]
-            if all(i < 40 for i in index_first5):
+            if all(i < 50 for i in index_first5):
                 if self.index_bent:
                     self.index_bent = False
                 if sum(self.path_total_index.get_stack()) > 1200:
