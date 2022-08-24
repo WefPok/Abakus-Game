@@ -187,8 +187,8 @@ class Analyzer:
             hand1 = result.multi_hand_landmarks[0].landmark
             hand2 = result.multi_hand_landmarks[1].landmark
 
-            points1 = [hand1[4], hand1[3], hand1[1], hand1[8], hand1[6], hand1[5], hand1[0]]
-            points2 = [hand2[4], hand2[3], hand2[1], hand2[8], hand2[6], hand2[5], hand2[0]]
+            points1 = [hand1[4], hand1[3], hand1[1], hand1[8], hand1[6], hand1[5], hand1[1]]
+            points2 = [hand2[4], hand2[3], hand2[1], hand2[8], hand2[6], hand2[5], hand2[1]]
 
             if hand1[0].x < hand2[0].x:
                 self.hands[0].update_hand_position(points1)
