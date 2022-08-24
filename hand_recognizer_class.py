@@ -141,7 +141,7 @@ class Hand:
                     print("+1 Thumb " + self.name)
                     events["+1"] = True
                     self.thumb_bent = True
-                    self.thumb_timeout = 5
+                    self.thumb_timeout = 10
                     self.angle_thumb.clear()
         else:
             self.thumb_timeout -= 1
