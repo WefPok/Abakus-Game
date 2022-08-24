@@ -164,7 +164,7 @@ class Hand:
                     self.index_bent = True
                     self.index_moved = True
                     self.index_timeout = 10
-                    if sum(self.path_total_index.get_stack()) > 800:
+                    if sum(self.path_total_index.get_stack()) > 700:
                         events["-5"] = True
                         print("-5 Index " + self.name)
                     else:
@@ -210,33 +210,14 @@ class Analyzer:
 
                 cv2.imshow("handlandmarks", copy)
 
-    def set_no_events(self, hand: Hand):
-        for key in self.event_json[hand.hand_id].keys():
-            self.event_json[hand.hand_id][key] = False
-
-        # def analyze_hand_thumb(self, hand: Hand):
-
-    #     hand_thumb_stack = hand.thumb_plain_stack.get_stack()
-    #     if 2 in hand_thumb_stack:
-    #         self.set_no_events(hand)
-    #     total_distance = [hand_thumb_stack[n] - hand_thumb_stack[n - 1] for n in range(1, len(hand_thumb_stack))]
-    #     print(total_distance)
-    def process_hand_position(self):
-        for hand in self.hands:
-            hand.set_state_variables()
-
     def main(self, frame):
-
 
         self.update_hands(frame)
         # print(self.hands[0].angle_index.get_stack())
-        self.process_hand_position()
         event_json = {"right_hand": {"x_position": self.hands[0].x_pos,
                                      "events": self.hands[0].set_state_variables()},
 
-
-
                       "left_hand": {"x_position": self.hands[1].x_pos,
-                                     "events": self.hands[1].set_state_variables()}}
+                                    "events": self.hands[1].set_state_variables()}}
 
         return json.dumps(event_json)

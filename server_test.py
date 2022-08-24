@@ -7,7 +7,6 @@ cap = cv2.VideoCapture(0)
 
 rec = Analyzer()
 
-
 async def handler(websocket):
     while True:
         ret, frame = cap.read()
